@@ -6,6 +6,13 @@ RSpec.describe "StaticPages", type: :system do
     @base_title = "Ruby on Rails Tutorial Sample App"
   end
 
+  it 'should get root' do
+    visit root_path
+    expect(current_path).to eq root_path
+    expect(page).to have_title "Home | #{@base_title}"
+
+  end
+
   it 'should get home' do
     visit static_pages_home_path
     expect(current_path).to eq (static_pages_home_path)
@@ -34,5 +41,5 @@ RSpec.describe "StaticPages", type: :system do
 
   end
 
-  
+
 end
