@@ -13,30 +13,25 @@ RSpec.describe "StaticPages", type: :system do
 
   end
 
-  it 'should get home' do
-    visit static_pages_home_path
-    expect(current_path).to eq (static_pages_home_path)
-    expect(page).to have_title " #{@base_title}"
-
-  end
+  
 
   it 'should get help' do
-    visit static_pages_help_path
-    expect(current_path).to eq (static_pages_help_path)
+    visit help_path
+    expect(current_path).to eq (help_path)
     expect(page).to have_title "Help | #{@base_title}"
 
   end
 
   it 'should get about' do
-    visit static_pages_about_path
-    expect(current_path).to eq (static_pages_about_path)
+    visit about_path
+    expect(current_path).to eq (about_path)
     expect(page).to have_title "About | #{@base_title}"
 
   end
 
   it 'should get contact' do
-    visit static_pages_contact_path
-    expect(current_path).to eq (static_pages_contact_path)
+    visit contact_path
+    expect(current_path).to eq (contact_path)
     expect(page).to have_title "Contact | #{@base_title}"
 
   end
