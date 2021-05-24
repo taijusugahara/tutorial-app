@@ -26,4 +26,13 @@ RSpec.describe "StaticPages", type: :system do
     expect(page).to have_title "About | #{@base_title}"
 
   end
+
+  it 'should get contact' do
+    visit static_pages_contact_path
+    expect(current_path).to eq (static_pages_contact_path)
+    expect(page).to have_title "Contact | #{@base_title}"
+
+  end
+
+  
 end
