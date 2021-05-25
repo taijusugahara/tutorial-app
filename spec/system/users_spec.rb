@@ -8,6 +8,47 @@ RSpec.describe "Users", type: :system do
     expect(current_path).to eq (signup_path)
   end
 
+  context 'Signup' do
+    it "invalid signup information" do
+      visit signup_path
+      fill_in 'Name', with:""
+      fill_in 'Email', with:"111@111.com"
+      fill_in 'Password', with: "101010"
+      fill_in 'Confirmation', with: "101010"
+      expect do
+        find('input[name="commit"]').click
+      end.to change { User.count }.by(0)
+
+      expect(page).to have_content('Sign up')
+      # これは違う
+      # expect(current_path).to eq(users_path)
+
+      expect(has_css?('.alert-danger')).to be_truthy
+      
+    end
+
+    it "valid signup information" do
+      visit signup_path
+      fill_in 'Name', with:"111"
+      fill_in 'Email', with:"111@111.com"
+      fill_in 'Password', with: "101010"
+      fill_in 'Confirmation', with: "101010"
+      expect do
+        find('input[name="commit"]').click
+      end.to change { User.count }.by(1)
+
+      expect(has_css?('.user_info')).to be_truthy
+      # showページにあるCSS これなくてもいいよ
+
+      expect(page).to have_content'Welcome to the Sample App!'
+      # flash
+      
+
+      
+    end
+
+  end
+
   
 
 
