@@ -48,7 +48,14 @@ test:
 #     url: <%= ENV['DATABASE_URL'] %>
 #
 production:
-  <<: *default
+  adapter: postgresql
+  encoding: unicode
+  # For details on connection pooling, see Rails configuration guide
+  # https://railsguides.jp/configuring.html#データベース接続をプールする
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   database: tutorial_app_production
   username: tutorial_app
   password: <%= ENV['TUTORIAL_APP_DATABASE_PASSWORD'] %>
+
+ 
+  
