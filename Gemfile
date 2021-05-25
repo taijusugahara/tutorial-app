@@ -56,3 +56,6 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 gem 'rspec-rails', '~> 4.0.0'
 gem 'bootstrap-sass', '3.4.1'
 gem 'bcrypt',         '3.1.13'
+gem 'factory_bot_rails'
+gem 'faker'
+gem 'pry-rails'

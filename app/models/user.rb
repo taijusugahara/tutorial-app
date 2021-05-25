@@ -8,4 +8,13 @@ class User < ApplicationRecord
                     uniqueness: true
   has_secure_password
   validates :password, presence: true, length: { minimum: 6 }
+
+  def User.digest(string)
+    cost = ActiveModel::SecurePassword.min_cost ? BCrypt::Engine::MIN_COST :
+                                                  BCrypt::Engine.cost
+    BCrypt::Password.create(string, cost: cost)
+    # 渡された引数をハッシュにしている
+    # このbcryptというのはhas_secure_passwordを使うために入れたgemである。
+    # よってやってること自体は一緒
+  end
 end
