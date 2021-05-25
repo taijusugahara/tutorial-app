@@ -11,4 +11,8 @@ module SessionsHelper
                             #                              findだとr例外を発生させてしまう
     end
   end
+
+  def logged_in?
+    !current_user.nil?
+  end
 end
