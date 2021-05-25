@@ -3,6 +3,7 @@ require 'rails_helper'
 RSpec.describe User, type: :model do
   before do
     @user = User.new(name: "Example User", email: "user@example.com")
+  
   end
 
   it 'should be valid' do
@@ -50,8 +51,21 @@ RSpec.describe User, type: :model do
 
   it "email addresses should be unique" do
     duplicate_user = @user.dup
-    duplicate_user.email = @user.email.upcase
+    # duplicate_user.email = @user.email.upcase
+    # モデル内のbefore actionでdowncaseにするようにしたので必要なくなった
     @user.save
     expect(duplicate_user).not_to be_valid
   end
+
+  it "email addresses should be saved as lower-case" do
+    mixed_case_email = "Foo@ExAMPle.CoM"
+    @user.email = mixed_case_email
+    @user.save
+    expect(mixed_case_email.downcase).to eq(@user.reload.email)
+
+  end
+
+
+
+  
 end
