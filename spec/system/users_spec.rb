@@ -1,7 +1,9 @@
 require 'rails_helper'
-
+include SessionsHelper
 
 RSpec.describe "Users", type: :system do
+
+  
 
   it 'should get new' do
     visit signup_path
@@ -42,6 +44,14 @@ RSpec.describe "Users", type: :system do
 
       expect(page).to have_content'Welcome to the Sample App!'
       # flash
+
+      # ログインしているかどうかは
+      # ログアウト等があることで証明できると思う
+      find(".dropdown-toggle").click
+    # ドロップダウンをクリック　クラス名
+      expect(page).to have_link href: logout_path
+      # expect(page).to have_link href: user_path(@user) これはだめか
+      expect(page).not_to have_link href: login_path
       
 
       
