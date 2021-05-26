@@ -61,9 +61,11 @@ end
 RSpec.describe "Users", type: :system do
   before do
     @user = FactoryBot.create(:user)
+    @other_user= FactoryBot.create(:user)
    
   end
     it "unsuccessful edit" do
+      log_in(@user)
       visit edit_user_path(@user)
       fill_in 'Name', with:"AAA"
       fill_in 'Email', with:"aaa@111.com"
@@ -75,6 +77,7 @@ RSpec.describe "Users", type: :system do
     end
 
     it "successful edit" do
+      log_in(@user)
       visit edit_user_path(@user)
       fill_in 'Name', with:"AAA"
       fill_in 'Email', with:"aaa@111.com"
@@ -89,6 +92,53 @@ RSpec.describe "Users", type: :system do
       expect(@user.email).to eq("aaa@111.com")
 
     end
+
+    it "should redirect edit when not logged in" do
+      visit edit_user_path(@user)
+      expect(current_path).to eq(login_path)
+    end
+
+    # ログインしていないupdateのテストはrequest specで書く（下）
+    it 'should redirect edit when logged in as wrong user' do
+      log_in(@user)
+      visit edit_user_path(@other_user)
+      expect(current_path).to eq(root_path)
+
+
+    end
+
+end
+
+
+
+
+
+
+
+RSpec.describe "Users", type: :request do
+  before do
+    @user = FactoryBot.create(:user)
+    @other_user= FactoryBot.create(:user)
+  end
+
+  it 'should redirect update when not logged in' do
+    patch user_path(@user), params: { user: { name: @user.name,
+      email: @user.email } }
+    expect(response).to redirect_to login_path
+  end
+
+  it "should redirect update when logged in as wrong user" do
+    log_in_as(@other_user)
+    patch user_path(@user), params: { user: { name: @user.name,
+      email: @user.email } }
+    expect(response).to redirect_to root_path
+
+
+  end
+
+
+
+
 
 
 end
