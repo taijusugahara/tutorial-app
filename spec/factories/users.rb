@@ -5,4 +5,8 @@ FactoryBot.define do
     password              { '1a' + Faker::Internet.password(min_length: 4)}
     password_confirmation { password }
   end
+
+  trait :admin do
+    admin { true }
+  end
 end
