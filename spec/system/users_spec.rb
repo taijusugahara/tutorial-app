@@ -174,6 +174,17 @@ RSpec.describe "Users", type: :request do
 
   end
 
+  it 'should not allow the admin attribute to be edited via the web' do
+    log_in_as(@other_user)
+    patch user_path(@other_user), params: {
+      user: { password:              "password",
+              password_confirmation: "password",
+              admin: true } }
+    expect(@other_user.admin?).to be_falsy
+      
+
+  end
+
   
 
 
