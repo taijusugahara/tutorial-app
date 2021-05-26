@@ -185,10 +185,40 @@ RSpec.describe "Users", type: :request do
 
   end
 
-  
+
+end
+
+RSpec.describe "Admin", type: :request do
+  before do
+    @user = FactoryBot.create(:user,:admin)
+    @other_user= FactoryBot.create(:user)
+  end
+
+  it "should redirect destroy when not logged in" do
+    
+    expect do
+      delete user_path(@other_user)
+    end.to change { User.count }.by(0)
+    expect(response).to redirect_to login_url
+  end
+
+  it 'should redirect destroy when logged in as a non-admin' do
+    log_in_as(@other_user)
+    expect do
+       delete user_path(@user)
+    end.to change { User.count }.by(0)
+    expect(response).to redirect_to root_path
+  end
 
 
-
+  it "index as admin including pagination and delete links" do
+    log_in_as(@user)
+    
+    expect do
+      delete user_path(@other_user)
+    end.to change { User.count }.by(-1)
+    expect(response).to redirect_to users_path
+  end
 
 
 
