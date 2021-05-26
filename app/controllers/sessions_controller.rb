@@ -10,7 +10,8 @@ class SessionsController < ApplicationController
       # 一方remember_tokenとかはhas_secure_passwordとは関係ないのでauthenticateメソッドを定義する必要がある
       log_in user
       params[:session][:remember_me] == '1' ? remember(user) : forget(user)
-      redirect_to user
+      redirect_back_or user
+     
       
     else
       

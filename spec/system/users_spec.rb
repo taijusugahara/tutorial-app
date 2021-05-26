@@ -107,8 +107,46 @@ RSpec.describe "Users", type: :system do
 
     end
 
+    it "successful edit with friendly forwarding" do
+
+      visit edit_user_path(@user)
+      log_in(@user)
+      expect(current_path).to eq(edit_user_path(@user))
+      fill_in 'Name', with:"BBB"
+      fill_in 'Email', with:"abc@111.com"
+      find('input[name="commit"]').click
+      expect(current_path).to eq(user_path(@user))
+      expect(page).to have_content'Profile updated'
+    end
+
+    it "should redirect index when not logged in" do
+      visit users_path
+      expect(current_path).to eq(login_path)
+    end
+
+
 end
 
+
+RSpec.describe "Index 大量のuser", type: :system do
+  before do
+    @user = FactoryBot.create(:user)
+    @other_user= FactoryBot.create(:user)
+    @users=FactoryBot.create_list(:user, 100)
+  end
+
+  
+  it 'index including pagination' do
+    log_in(@user)
+    visit users_path
+    User.paginate(page: 1).each do |user|
+      expect(page).to have_link href: user_path(user)
+      expect(page).to have_content(user.name)
+    end
+  end
+
+
+end
 
 
 
@@ -135,6 +173,8 @@ RSpec.describe "Users", type: :request do
 
 
   end
+
+  
 
 
 

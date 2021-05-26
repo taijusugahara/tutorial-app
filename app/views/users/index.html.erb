@@ -1,3 +1,13 @@
-<h1>Hello!</h1>
+<% provide(:title, 'All users') %>
+<h1>All users</h1>
 
-<%= link_to "新規登録", new_user_path%>
+<%= will_paginate %>
+
+<ul class="users">
+  <% @users.each do |user| %>
+  <%= render @users %>
+   
+  <% end %>
+</ul>
+
+<%= will_paginate %>
