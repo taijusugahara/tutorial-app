@@ -46,6 +46,23 @@ RSpec.describe "Sessions", type: :system do
     visit help_path
     expect(page).not_to have_content("Invalid email/password combination")
   end
+
+  it "login with valid information followed by logout" do
+    visit login_path
+    fill_in 'Email', with: @user.email
+    fill_in 'Password', with: @user.password
+    find('input[name="commit"]').click
+    expect(current_path).to eq(user_path(@user))
+    find(".dropdown-toggle").click
+   
+    expect(page).to have_link href: logout_path
+    click_link 'Log out'
+    # リンクをクリックする
+    expect(current_path).to eq(root_path)
+    expect(page).to have_link href: login_path
+
+    
+  end
 end
 
 
