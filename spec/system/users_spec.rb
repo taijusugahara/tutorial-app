@@ -71,8 +71,22 @@ RSpec.describe "Users", type: :system do
       fill_in 'Password confirmation', with: "fbaxfe"
       find('input[name="commit"]').click
       expect(has_css?('.alert-danger')).to be_truthy
-      
+ 
+    end
 
+    it "successful edit" do
+      visit edit_user_path(@user)
+      fill_in 'Name', with:"AAA"
+      fill_in 'Email', with:"aaa@111.com"
+      fill_in 'Password', with: "abcdef"
+      fill_in 'Password confirmation', with: "abcdef"
+      find('input[name="commit"]').click
+      expect(current_path).to eq(user_path(@user))
+      expect(page).to have_content'Profile updated'
+
+      @user.reload
+      expect(@user.name).to eq("AAA")
+      expect(@user.email).to eq("aaa@111.com")
 
     end
 
