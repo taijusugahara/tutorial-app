@@ -1,5 +1,5 @@
 require 'rails_helper'
-include SessionsHelper
+# include SessionsHelper
 
 RSpec.describe "Users", type: :system do
 
@@ -16,7 +16,7 @@ RSpec.describe "Users", type: :system do
       fill_in 'Name', with:""
       fill_in 'Email', with:"111@111.com"
       fill_in 'Password', with: "101010"
-      fill_in 'Confirmation', with: "101010"
+      fill_in 'Password confirmation', with: "101010"
       expect do
         find('input[name="commit"]').click
       end.to change { User.count }.by(0)
@@ -34,7 +34,7 @@ RSpec.describe "Users", type: :system do
       fill_in 'Name', with:"111"
       fill_in 'Email', with:"111@111.com"
       fill_in 'Password', with: "101010"
-      fill_in 'Confirmation', with: "101010"
+      fill_in 'Password confirmation', with: "101010"
       expect do
         find('input[name="commit"]').click
       end.to change { User.count }.by(1)
@@ -56,11 +56,30 @@ RSpec.describe "Users", type: :system do
 
       
     end
-
   end
+end
+RSpec.describe "Users", type: :system do
+  before do
+    @user = FactoryBot.create(:user)
+   
+  end
+    it "unsuccessful edit" do
+      visit edit_user_path(@user)
+      fill_in 'Name', with:"AAA"
+      fill_in 'Email', with:"aaa@111.com"
+      fill_in 'Password', with: "abcdef"
+      fill_in 'Password confirmation', with: "fbaxfe"
+      find('input[name="commit"]').click
+      expect(has_css?('.alert-danger')).to be_truthy
+      
+
+
+    end
+
+
+end
 
   
 
 
 
-end
