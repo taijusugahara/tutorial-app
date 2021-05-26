@@ -71,11 +71,8 @@ RSpec.describe "Sessions", type: :system do
     log_in(@user)
   end
 
-  it 'log_in_no_remember' do
-    log_in_no_remember(@user)
-  end
+  
 end
-
 
 
 RSpec.describe "Sessions", type: :request do
@@ -83,6 +80,13 @@ RSpec.describe "Sessions", type: :request do
     @user = FactoryBot.create(:user)
   end
   # let(:user) { FactoryBot.create(:user) }
+
+  it '二つのタブでログアウト' do
+    delete logout_path
+    expect(response).to redirect_to root_path
+    expect(is_login?).to be_falsy
+
+  end
 
   it 'login with remembering' do 
     log_in_as(@user, remember:'1')
@@ -107,13 +111,13 @@ RSpec.describe SessionsHelper, type: :helper do
 
   it 'current_user returns right user when session is nil' do
     expect(current_user).to eq @user
-    expect(logged_in?).to be_truthy
+    expect(is_login?).to be_truthy
   end
 
   it "current_user returns nil when remember digest is wrong" do
     @user.update_attribute(:remember_digest, User.digest(User.new_token))
     expect(current_user).not_to eq @user
-    expect(logged_in?).to be_falsy
+    expect(is_login?).to be_falsy
   end
 
 end
