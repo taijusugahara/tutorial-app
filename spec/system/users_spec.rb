@@ -39,24 +39,30 @@ RSpec.describe "Users", type: :system do
         find('input[name="commit"]').click
       end.to change { User.count }.by(1)
 
-      expect(has_css?('.user_info')).to be_truthy
+      # expect(has_css?('.user_info')).to be_truthy
       # showページにあるCSS これなくてもいいよ
+      # アカウント有効かのところで、rootに行くように変更になったからもういらない
+      expect(current_path).to eq(root_path)
+      # expect(page).to have_content'Welcome to the Sample App!'
+      # flashメッセージもアカウント有効化で変わったので変更
 
-      expect(page).to have_content'Welcome to the Sample App!'
+      expect(page).to have_content'Please check your email to activate your account.'
       # flash
+
+    #  ＊＊＊＊＊以下のコードもアカウント有効化によりまだログインしていないので不要＊＊＊＊＊＊＊＊
 
       # ログインしているかどうかは
       # ログアウト等があることで証明できると思う
-      find(".dropdown-toggle").click
+      # find(".dropdown-toggle").click
     # ドロップダウンをクリック　クラス名
-      expect(page).to have_link href: logout_path
-      # expect(page).to have_link href: user_path(@user) これはだめか
-      expect(page).not_to have_link href: login_path
+      # expect(page).to have_link href: logout_path
+                   # expect(page).to have_link href: user_path(@user) これはだめか
+      # expect(page).not_to have_link href: login_path
       
 
       
     end
-  end
+  end   
 end
 RSpec.describe "Users", type: :system do
   before do
@@ -222,6 +228,45 @@ RSpec.describe "Admin", type: :request do
 
 
 
+end
+
+RSpec.describe "アカウント有効化", type: :system do
+
+  before do
+    @user = FactoryBot.create(:user,:not_activation)
+    
+  end
+
+  it "activation_tokenが正しくない時" do
+  
+    visit edit_account_activation_path("invalid",email:@user.email)
+    expect(current_path).to eq(root_path)
+    expect(page).to have_content("Invalid activation link")
+    
+    expect(page).to have_link href: login_path
+  end
+
+  it "emailが正しくない時" do
+  
+    visit edit_account_activation_path("invalid",email:"111@111.com")
+    expect(current_path).to eq(root_path)
+    expect(page).to have_content("Invalid activation link")
+  
+    expect(page).to have_link href: login_path
+  end
+
+
+  it "valid signup information with account activation" do
+    
+    
+    visit edit_account_activation_path(@user.activation_token,email:@user.email)
+    expect(current_path).to eq(user_path(@user))
+    expect(page).to have_content("Account activated!")
+    find(".dropdown-toggle").click
+    
+    expect(page).to have_link href: logout_path
+
+  end
 end
 
   
