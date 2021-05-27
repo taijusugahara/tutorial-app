@@ -4,6 +4,9 @@ FactoryBot.define do
     email                 { Faker::Internet.free_email  }
     password              { '1a' + Faker::Internet.password(min_length: 4)}
     password_confirmation { password }
+    # 下の二つは後で改良
+    activated {true}
+    activated_at {Time.zone.now}
   end
 
   trait :admin do
