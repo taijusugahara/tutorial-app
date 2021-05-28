@@ -269,6 +269,128 @@ RSpec.describe "アカウント有効化", type: :system do
   end
 end
 
+RSpec.describe "パスワードreset", type: :system do
+
+  before do
+    @user = FactoryBot.create(:user)
+    
+  end
+
+  it 'password/new createでemailが正しくない時' do
+    visit password_resets_new_path
+    fill_in 'Email', with:"abc@111.com"
+    find('input[name="commit"]').click
+    expect(page).to have_content("Email address not found")
+  end
+
+  it 'password/new createでemailが正しい時' do
+    visit password_resets_new_path
+    fill_in 'Email', with: @user.email
+    find('input[name="commit"]').click
+    expect(current_path).to eq(root_path)
+    expect(page).to have_content("Email sent with password reset instructions")
+
+  end
+end
+RSpec.describe "パスワードreset", type: :request do
+
+  before do
+    @user = FactoryBot.create(:user)
+    @user.create_reset_digest 
+  end
+
+  it 'password/edit ユーザーが無効の場合(not_activate)' do
+    @user.toggle!(:activated)
+    # toggle!は真偽を反対にする　この場合falseにしている
+    get edit_password_reset_path(@user.reset_token,email:@user.email)
+
+    expect(response.body).to redirect_to root_path
+    
+  end
+
+  it 'password/editでemailが正しくない時' do
+    get edit_password_reset_path(@user.reset_token,email:"111@111.com")
+    expect(response).to redirect_to root_path
+    
+  end
+
+  it 'password/editでreset_tokenが正しくない時' do
+    get edit_password_reset_path("invalid",email:"@user.email")
+    expect(response).to redirect_to root_path
+   
+  end
+
+  it 'password/editでreset_tokenが正しい時' do
+    get edit_password_reset_path(@user.reset_token,email:@user.email)
+
+    expect(response.body).to include "Reset password"
+
+  end
+
+  it 'password/updateでpasswordが空の時' do
+    patch password_reset_path(@user.reset_token),
+    params:{ email:@user.email,
+             user:{
+              password: "",
+             },
+    }
+    expect(response.body).to include "Reset password"
+
+  end
+
+  it 'password/updateでpasswordとpassword_confirmationが無効な時' do
+    patch password_reset_path(@user.reset_token),
+    params:{ email:@user.email,
+             user:{
+              password: "abcdef",
+              password_confirmation: "123456",
+             },
+    }
+    expect(response.body).to include "Reset password"
+    
+
+  end
+
+  it 'password/updateで正しくpasswordとpassword_confirmationが入力されている場合' do
+    patch password_reset_path(@user.reset_token),
+    params:{ email:@user.email,
+             user:{
+              password: "abcdef",
+              password_confirmation: "abcdef",
+             },
+    }
+    expect(response).to redirect_to user_path(@user)
+    expect(is_login?).to be_truthy
+    expect(@user.reload.reset_digest).to eq nil
+    
+
+  end
+
+  it 'Password resetが時間切れの場合' do
+    @user.update_attribute(:reset_sent_at, 5.hours.ago)
+    patch password_reset_path(@user.reset_token),
+    params:{ email:@user.email,
+      user:{
+       password: "abcdef",
+       password_confirmation: "abcdef",
+      },
+    }
+    expect(response).to redirect_to new_password_reset_url
+  end
+
+
+
+  end
+
+  
+
+
+
+
+
+
+end
+
   
 
 
