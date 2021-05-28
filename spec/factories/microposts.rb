@@ -1,9 +1,10 @@
 FactoryBot.define do
   
   factory :micropost do
-    content { "MyText" }
+    content { Faker::Lorem.sentence }
     # created_at { 10.minutes.ago }
     association :user
+    
   end
 
 
@@ -22,6 +23,11 @@ FactoryBot.define do
     content { "１週間前" }
     created_at { 1.week.ago }
   end
+
+  trait :user_id do
+    user_id {@user}
+  end
+
 
 
 end
