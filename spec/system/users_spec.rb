@@ -315,7 +315,7 @@ RSpec.describe "パスワードreset", type: :request do
   end
 
   it 'password/editでreset_tokenが正しくない時' do
-    get edit_password_reset_path("invalid",email:"@user.email")
+    get edit_password_reset_path("invalid",email:@user.email)
     expect(response).to redirect_to root_path
    
   end
@@ -377,15 +377,6 @@ RSpec.describe "パスワードreset", type: :request do
     }
     expect(response).to redirect_to new_password_reset_url
   end
-
-
-
-
-  
-
-
-
-
 
 
 end
