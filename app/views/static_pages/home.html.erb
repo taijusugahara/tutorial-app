@@ -1,5 +1,16 @@
 <%# <% provide(:title, "Home") %> 
-
+<% if logged_in? %>
+  <div class="row">
+    <aside class="col-md-4">
+      <section class="user_info">
+        <%= render 'shared/user_info' %>
+      </section>
+      <section class="micropost_form">
+        <%= render 'shared/micropost_form' %>
+      </section>
+    </aside>
+  </div>
+<% else %>
 <div class="center jumbotron">
   <h1>Welcome to the Sample App</h1>
 
@@ -18,3 +29,4 @@
                       <%# 猫の画像 %>
                       <%# <%= link_to image_tag("kitten.jpg", alt: "Kitten logo", width: "200px"),
                       "https://rubyonrails.org/" %>
+<% end %>
