@@ -41,3 +41,18 @@ RSpec.describe Micropost, type: :model do
   end
 
 end
+
+RSpec.describe Micropost, type: :model do
+  before do
+    @micropost = FactoryBot.create(:micropost)
+  end
+
+  it 'associated microposts should be destroyed' do
+    expect do
+    @micropost.user.destroy
+  end.to change(Micropost, :count).by(-1)
+
+  end
+
+
+end
