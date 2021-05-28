@@ -17,21 +17,35 @@ RSpec.describe UserMailer, type: :mailer do
     it "renders the body" do
       expect(mail.body.encoded).to match("Welcome to the Sample App! Click on the link below to activate your account")
       expect(mail.body.encoded).to match(@user.name)
+      expect(mail.body.encoded).to match(@user.activation_token)
+      expect(mail.body.encoded).to match CGI.escape(@user.email)
     end
   end
+end
 
-  # describe "password_reset" do
-  #   let(:mail) { UserMailer.password_reset }
+RSpec.describe UserMailer, type: :mailer do
+  describe "password_reset" do
 
-  #   it "renders the headers" do
-  #     expect(mail.subject).to eq("Password reset")
-  #     expect(mail.to).to eq(["to@example.org"])
-  #     expect(mail.from).to eq(["from@example.com"])
-  #   end
+    let(:mail) { UserMailer.password_reset(@user) }
+    before do
+      @user = FactoryBot.create(:user)
+      @user.reset_token = User.new_token 
+      # これ必要！！　上のactivationの方はbefore_createでtoken生成してくれてたけどこっちはそうじゃないから
+      # 作ってあげる必要あり
+    end
 
-  #   it "renders the body" do
-  #     expect(mail.body.encoded).to match("Hi")
-  #   end
-  # end
+    it "renders the headers" do
+      expect(mail.subject).to eq("Password reset")
+      expect(mail.to).to eq([@user.email])
+      expect(mail.from).to eq(["noreply@example.com"])
+    end
+
+    it "renders the body" do
+      expect(mail.body.encoded).to match("To reset your password click the link below:")
+      expect(mail.body.encoded).to match(@user.reset_token)
+      expect(mail.body.encoded).to match CGI.escape(@user.email)
+      
+    end
+  end
 
 end
