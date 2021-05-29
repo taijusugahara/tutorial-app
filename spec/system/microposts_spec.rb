@@ -105,34 +105,3 @@ RSpec.describe "Microposts", type: :request do
 
 end
 
-RSpec.describe "Microposts", type: :system do
-  before do
-    @user = FactoryBot.create(:user)
-  end
-
-  it 'micropost interface 全体の流れ(micropost)' do
-    log_in(@user)
-    visit root_path
-    fill_in 'micropost_content', with: "How are you?"
-    expect do
-      find('input[name="commit"]').click
-    end.to change { Micropost.count }.by(1)
-    expect do 
-      click_link 'delete'
-      # deleteを押すとYou sureというconfirmが出るのでそれの対処
-      # expectのブロック内にひとつ以上のexpectもしくはfindを入れないと、
-      # ダイアログが表示されてacceptされる前に次へ進んでしまうので注意が必要らしい
-      page.accept_confirm "You sure?"
-      # ここ！！！大事 これでOKの役割
-      expect(page).to have_content("Micropost deleted")
-      # 上の理由によりこれもいる
-    end.to change { Micropost.count }.by(-1)
-    # ＋＠
-    # pageインスタンスにaccept_confirmとdismiss_confirmという
-    # ブラウザのダイアログ操作用メソッドが用意されていてる
-    # dismissに変えたところmicropostは減らなかった
-
-
-  end
-
-end

@@ -7,8 +7,6 @@ FactoryBot.define do
     
   end
 
-
-
   trait :yesterday do
     content { "昨日" }
     created_at { 1.day.ago }
@@ -23,11 +21,6 @@ FactoryBot.define do
     content { "１週間前" }
     created_at { 1.week.ago }
   end
-
-  trait :user_id do
-    user_id {@user}
-  end
-
 
 
 end
