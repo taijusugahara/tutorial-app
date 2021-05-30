@@ -291,6 +291,16 @@ RSpec.describe "パスワードreset", type: :system do
     expect(page).to have_content("Email sent with password reset instructions")
 
   end
+
+  it "should redirect following when not logged in" do
+    visit following_user_path(@user)
+    expect(current_path).to eq(login_path)
+  end
+
+  it "should redirect followers when not logged in" do
+    visit followers_user_path(@user)
+    expect(current_path).to eq(login_path)
+  end
 end
 RSpec.describe "パスワードreset", type: :request do
 

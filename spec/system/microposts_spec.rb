@@ -35,6 +35,8 @@ RSpec.describe "Microposts", type: :system do
     it 'micropost interface 全体の流れ(micropost)' do
       log_in(@user)
       visit root_path
+      expect(page).to have_content("following")
+      expect(page).to have_content("followers")
       expect(page).to have_link"Next"
       # これでページネーションあること（３０個以上micropostあること）示す
       fill_in 'micropost_content', with: "How are you?"

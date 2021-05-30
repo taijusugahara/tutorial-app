@@ -80,5 +80,24 @@ RSpec.describe User, type: :model do
   it "authenticated? should return false for a user with nil digest" do
     expect(@user.authenticated?(:remember,'')).to be_falsy
   end
-  
+
+end
+  RSpec.describe User, type: :model do
+    before do
+      @user = FactoryBot.create(:user)
+      @other_user = FactoryBot.create(:user)
+      # @user = User.new(name: "Example User", email: "user@example.com",password: "foobar", password_confirmation: "foobar")
+      
+    end
+    it "should follow and unfollow a user" do
+      expect(@user.following?(@other_user)).to be_falsy
+      @user.follow(@other_user)
+      expect(@user.following?(@other_user)).to be_truthy
+      expect(@other_user.followers).to include(@user)
+      @user.unfollow(@other_user)
+      expect(@user.following?(@other_user)).to be_falsy
+
+
+    end
+    
 end
