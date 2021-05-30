@@ -66,17 +66,7 @@ RSpec.describe "Microposts", type: :request do
   before do
     @user = FactoryBot.create(:user)
     @other_user = FactoryBot.create(:user)
-    @other_users=FactoryBot.create_list(:user, 10)
-    # 下でフォロー、フォロワーの関係を作っている
-    # 一番でいうとfollowing_idは@user これはactive_relationship時に
-    # foreignキーとして設定してる（モデル見ればわかる）
 
-    # @follow=@user.active_relationships.create!(followed_id: @other_user.id)
-    @other_users[0..9].each do |other_user|
-      @user.active_relationships.create!(followed_id: other_user.id)
-      @user.passive_relationships.create!(follower_id: other_user.id)
-    end
-    
   end
 
   it "create should require logged-in user" do
@@ -126,6 +116,57 @@ RSpec.describe "Microposts", type: :request do
       delete relationship_path(@follow), xhr: true
     end.to change{Relationship.count}.by(-1)
   end
+
+ 
+
+  
 end
 
+RSpec.describe "Microposts", type: :system do
+  before do
+    @user = FactoryBot.create(:user)
+    @other_user = FactoryBot.create(:user)
+    @other_user2 = FactoryBot.create(:user)
+    
+    10.times do
+      content = Faker::Lorem.sentence(word_count: 5)
+      @user.microposts.create!(content: content)
+    end
+    
+    10.times do
+      content = Faker::Lorem.sentence(word_count: 5)
+      @other_user.microposts.create!(content: content)
+    end
+    10.times do
+      content = Faker::Lorem.sentence(word_count: 5)
+      @other_user2.microposts.create!(content: content)
+    end
+  end
+  it "feed should have the right posts" do
+    log_in(@user)
+    visit user_path(@other_user)
+    # expect(page).to have_content("Follow")
+    expect do
+      click_on 'Follow'
+      sleep 1
+    end.to change{Relationship.count}.by(1)
+    visit root_path
+
+    @user.microposts.each do |micropost|
+    expect(page).to have_content(micropost.content)
+    end
+
+    @other_user.microposts.each do |micropost|
+      expect(page).to have_content(micropost.content)
+      end
+
+      @other_user2.microposts.each do |micropost|
+        expect(page).not_to have_content(micropost.content)
+        end
+    
+
+
+
+  end
+end
 
